@@ -54,7 +54,7 @@ cd src
 python main.py
 ```
 
-桌宠会出现在屏幕右下角。**首次运行**会自动建 `data/wordpet.db` + 导入内置词本。
+桌宠会出现在屏幕右下角。**首次运行**会自动建 `data/wordpet.db` + 导入内置词本。目前为了测试提交的版本中留有默认的单词本
 
 ---
 
@@ -128,9 +128,9 @@ WordPet/
 
 - 词典数据: [Free Dictionary API](https://dictionaryapi.dev/)
 - 语音合成: [gTTS](https://gtts.readthedocs.io/)
-- 桌宠形象: 哈基米 (PNG from internal assets)
+- 桌宠形象: 哈基米 (PNG from internal assets，AI生成)
 
 ---
 
-*文档版本: 2.1*
+*文档版本: 1.1.0*
 *最后更新: 2026-06-06*
