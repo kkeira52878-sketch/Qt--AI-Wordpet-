@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sqlite3
 import json
 from datetime import datetime
@@ -10,6 +11,11 @@ class Database:
 
     def __init__(self, db_path):
         self.db_path = db_path
+        # 自动建父目录, 避免 sqlite3.OperationalError
+        # (测试或全新拉下来的项目里 data/ 不存在, main.py 之前手动建, 但测试不走 main)
+        parent = os.path.dirname(db_path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
         self._ensure_db()
 
     # ── 启动迁移 (幂等) ──────────────────────────────────────────
