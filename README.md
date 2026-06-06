@@ -29,32 +29,54 @@
 
 ## 技术栈
 
-- **Python 3.x** + **PySide6** (Qt for Python)
+- **Python 3.11 / 3.12** + **PySide6** (Qt for Python)
 - **SQLite** (持久化词汇库 + 自动迁移)
 - **gTTS** (英文 TTS) + Windows MCI (静音播放)
 - **Free Dictionary API** (免 key)
 - **pynput** (全局热键)
 
-依赖列表见 `requirements.txt`。
+> ⚠️ **Python 版本要求**: 3.11.x 或 3.12.x, **不要用 3.13+ / 3.14+**。
+> PySide6 6.11 wheel 在 3.13 / 3.14 上报 `DLL load failed while importing QtWidgets`。
+> 启动时 `main.py` 会硬性检查版本, 不符直接 `sys.exit(1)`。
+
+依赖列表见 `requirements.txt`, 或 `pyproject.toml` (推荐, 强约束 Python 版本)。
 
 ---
 
 ## 快速开始
 
 ```powershell
-# 1. 创建虚拟环境 (可选, 推荐)
-python -m venv .venv
+# 1. 克隆项目
+git clone <repo-url>
+cd Qt--AI-Wordpet-
+
+# 2. 创建虚拟环境 — 必须 Python 3.11 或 3.12
+uv venv --python 3.11 .venv            # ← 用 uv 锁版本
+# 或: python3.11 -m venv .venv
+
+# 3. 激活 venv (PowerShell)
 .\.venv\Scripts\Activate.ps1
 
-# 2. 安装依赖
-pip install -r requirements.txt
+# 4. 安装依赖
+uv pip install -r requirements.txt     # 运行时
+uv pip install pytest                  # 测试时 (可选)
+# 或一条命令: uv pip install -e ".[dev]"
 
-# 3. 跑应用
+# 5. 跑应用
 cd src
 python main.py
 ```
 
 桌宠会出现在屏幕右下角。**首次运行**会自动建 `data/wordpet.db` + 导入内置词本。目前为了测试提交的版本中留有默认的单词本
+
+### 常见踩坑
+
+| 症状 | 原因 | 解决 |
+|------|------|------|
+| `DLL load failed while importing QtWidgets` | Python 3.13 / 3.14 + PySide6 6.11 不兼容 | 删 `.venv`, `uv venv --python 3.11 .venv` 重建 |
+| `Activate.ps1 is not recognized` | venv 用 msys64 3.14 Python 建的 (Linux 布局) | 同上, 重建 |
+| `sqlite3.OperationalError: unable to open database file` | `data/` 目录不存在 | 已修, `Database.__init__` 现在自动建父目录 |
+| `pytest` 找不到 module | 没装 pytest | `uv pip install pytest` 或 `uv pip install -e ".[dev]"` |
 
 ---
 
@@ -62,10 +84,10 @@ python main.py
 
 ```powershell
 # 全量 pytest (22 个用例, 约 1s)
-python -m pytest tests/ -v
+.venv/Scripts/python.exe -m pytest tests/ -v
 
 # 手动 smoke 工具 (不在 pytest 收集里)
-python tests/smoke_test.py
+.venv/Scripts/python.exe tests/smoke_test.py
 ```
 
 测试覆盖:
